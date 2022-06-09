@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1C27AB2A-B855-4CA2-B36A-342366853664}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObserverLibrary", "ObserverLibrary\ObserverLibrary.csproj", "{0ED156CF-0AEF-4E66-8E81-9E3F7505DCB4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.SensorService", "src\Weather.SensorService\Weather.SensorService.csproj", "{8F74384E-510C-4787-9BA4-8007BE20981D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,12 +10,12 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{0ED156CF-0AEF-4E66-8E81-9E3F7505DCB4} = {1C27AB2A-B855-4CA2-B36A-342366853664}
+		{8F74384E-510C-4787-9BA4-8007BE20981D} = {1C27AB2A-B855-4CA2-B36A-342366853664}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0ED156CF-0AEF-4E66-8E81-9E3F7505DCB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0ED156CF-0AEF-4E66-8E81-9E3F7505DCB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0ED156CF-0AEF-4E66-8E81-9E3F7505DCB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0ED156CF-0AEF-4E66-8E81-9E3F7505DCB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F74384E-510C-4787-9BA4-8007BE20981D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F74384E-510C-4787-9BA4-8007BE20981D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F74384E-510C-4787-9BA4-8007BE20981D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F74384E-510C-4787-9BA4-8007BE20981D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
