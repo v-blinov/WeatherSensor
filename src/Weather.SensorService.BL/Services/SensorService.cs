@@ -86,9 +86,63 @@ public class SensorService : ISensorService
         return sensorDto;
     }
 
-    IEnumerable<SensorDto> ISensorService.GetSensors() => throw new NotImplementedException();
+    IEnumerable<SensorDto> ISensorService.GetSensors()
+    {
+        var sensors = _sensorStorage.GetSensors();
+        
+        var sensorsDtos = sensors.Select(sensor => new SensorDto
+        {
+            Id = sensor.Id,
+            SensorSettings = new SensorSettingDto
+            {
+                Type = sensor.SensorSettings.Type,
+                WorkInterval = sensor.SensorSettings.WorkInterval
+            },
+            Event = new EventDto
+            {
+                CreatedAt = sensor.State.CreatedAt,
+                EventData = new EventDataDto
+                {
+                    Temperature = sensor.State.EventData.Temperature,
+                    AirHumidity = sensor.State.EventData.AirHumidity,
+                    Co2 = sensor.State.EventData.Co2,
+                }
+            }
+        }).ToArray();
 
-    IEnumerable<SensorDto> ISensorService.GetSensors(IEnumerable<Guid> ids) => throw new NotImplementedException();
-    
-    public IEnumerable<Guid> GetSensorIds() => throw new NotImplementedException();
+        return sensorsDtos;
+    }
+
+    IEnumerable<SensorDto> ISensorService.GetSensors(IEnumerable<Guid> ids)
+    {
+        var sensors = _sensorStorage.GetSensors(ids);
+        
+        var sensorsDtos = sensors.Select(sensor => new SensorDto
+        {
+            Id = sensor.Id,
+            SensorSettings = new SensorSettingDto
+            {
+                Type = sensor.SensorSettings.Type,
+                WorkInterval = sensor.SensorSettings.WorkInterval
+            },
+            Event = new EventDto
+            {
+                CreatedAt = sensor.State.CreatedAt,
+                EventData = new EventDataDto
+                {
+                    Temperature = sensor.State.EventData.Temperature,
+                    AirHumidity = sensor.State.EventData.AirHumidity,
+                    Co2 = sensor.State.EventData.Co2,
+                }
+            }
+        }).ToArray();
+
+        return sensorsDtos;
+    }
+
+    public IEnumerable<Guid> GetSensorIds()
+    {
+        var sensors = _sensorStorage.GetSensors();
+        return sensors.Select(sensor => sensor.Id).ToArray();
+    }
 }
