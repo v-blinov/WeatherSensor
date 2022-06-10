@@ -22,7 +22,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\..\Weather.SensorService.BL\Weather.SensorService.BL.csproj" />
+      <ProjectReference Include="..\Weather.SensorService.BL\Weather.SensorService.BL.csproj" />
       <ProjectReference Include="..\ObserverLibrary\ObserverLibrary.csproj" />
     </ItemGroup>
     
