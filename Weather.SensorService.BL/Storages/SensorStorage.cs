@@ -19,27 +19,38 @@ public class SensorStorage : ISensorStorage
     
     public Sensor GetSensor(Guid id)
     {
-        _storage.FirstOrDefault(p => p.Id == id)
+        var sensor = _storage.FirstOrDefault(p => p.Id == id);
+        if (sensor is null)
+            throw new KeyNotFoundException(id.ToString());
         
-        return _storage.FirstOrDefault(p => p.Id == id);
+        return sensor;
     }
 
-    public Dictionary<Guid, Sensor?> GetSensor(IEnumerable<Guid> ids)
+    public IEnumerable<Sensor> GetSensors()
+    {
+        return _storage.ToArray();
+    }
+    
+    public IEnumerable<Sensor> GetSensors(IEnumerable<Guid> ids)
     {
         if(!ids.Any())
-            return new Dictionary<Guid, Sensor?>();
+            return Enumerable.Empty<Sensor>();
         
-        var sensors = new Dictionary<Guid, Sensor?>();
+        var sensors = new List<Sensor>(ids.Count());
         foreach(var id in ids)
-            sensors[id] = _storage.FirstOrDefault(p => p.Id == id);
+        {
+            var sensor = _storage.FirstOrDefault(p => p.Id == id);
+            if (sensor is null)
+                throw new KeyNotFoundException(id.ToString());
+            
+            sensors.Add(sensor);
+        } 
 
         return sensors;
     }
 
-    public IEnumerable<Guid> GetSensorIds() => throw new NotImplementedException();
-
-    public IEnumerable<Sensor> GetSensors()
+    public IEnumerable<Guid> GetSensorIds()
     {
-        return _storage;
+        return _storage.Select(p => p.Id).ToArray();
     }
 }
