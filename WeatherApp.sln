@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.SensorService", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObserverLibrary", "src\ObserverLibrary\ObserverLibrary.csproj", "{310A1511-5993-4123-A1AD-4748D96FC72D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.SensorService.BL", "Weather.SensorService.BL\Weather.SensorService.BL.csproj", "{445C754E-F01A-4A6D-9DA8-476D93905720}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{310A1511-5993-4123-A1AD-4748D96FC72D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{310A1511-5993-4123-A1AD-4748D96FC72D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{310A1511-5993-4123-A1AD-4748D96FC72D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{445C754E-F01A-4A6D-9DA8-476D93905720}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{445C754E-F01A-4A6D-9DA8-476D93905720}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{445C754E-F01A-4A6D-9DA8-476D93905720}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{445C754E-F01A-4A6D-9DA8-476D93905720}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
