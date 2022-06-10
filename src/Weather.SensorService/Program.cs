@@ -10,10 +10,10 @@ var logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
-builder.Services.AddGrpcClient<Weather.SensorService.Generator.GeneratorClient>("IndoorSensor", options =>
-    { options.Address = new Uri("https://localhost:7235"); });
-builder.Services.AddGrpcClient<Weather.SensorService.Generator.GeneratorClient>("OutdoorSensor", options =>
-    { options.Address = new Uri("https://localhost:7235"); });
+builder.Services.AddGrpcClient<Weather.SensorService.Generator.GeneratorClient>(options =>
+{
+    options.Address = new Uri("https://localhost:7235");
+});
 
 
 builder.Services.AddMvcCore();

@@ -1,8 +1,10 @@
-﻿namespace ObserverLibrary.Interfaces;
+﻿using ObserverLibrary.Models;
+
+namespace ObserverLibrary.Interfaces;
 
 public interface IPublisher
 {
-    void Subscribe(string subscriberId);
-    void Unsubscribe(string subscriberId);
-    void Notify();
+    void Subscribe(ISubscriber subscriber);
+    void Unsubscribe(ISubscriber subscriber);
+    void Notify(Event @event);
 }

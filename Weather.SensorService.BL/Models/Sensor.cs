@@ -1,15 +1,16 @@
+﻿using ObserverLibrary.Interfaces;
 using Weather.SensorService.BL.Enums;
 using Weather.SensorService.BL.Models.Interfaces;
 
 namespace Weather.SensorService.BL.Models;
 
-public class Sensor : ISensor
+public class Sensor : ISensor, IPublisher
 {
     public Guid Id { get; init; }
 
     private Event _state;
     private readonly SensorSettings _sensorSettings;
-    private List<string> _subscribers = new();
+    private List<ISubscriber> _subscribers = new();
     public Sensor(Event state, SensorSettings sensorSettings)
     {
         _state = state;
@@ -18,6 +19,26 @@ public class Sensor : ISensor
 
     #region Generator
 
+    public async Task StreamGeneration(CancellationToken cancellationToken)
+    {
+        while(!cancellationToken.IsCancellationRequested)
+        {
+            await Task.Delay(_sensorSettings.WorkInterval, cancellationToken);
+            var @event = GenerateEvent();
+
+            var observerEvent = new ObserverLibrary.Models.Event
+            {
+                SensorId = Id,
+                CreatedAt = @event.CreatedAt,
+                Temperature = @event.EventData.Temperature,
+                AirHumidity = @event.EventData.AirHumidity,
+                Co2 = @event.EventData.Co2
+            };
+            
+            Notify(observerEvent);
+        }
+    }
+    
     public Event GenerateEvent()
     {
         var random = new Random();
@@ -55,6 +76,26 @@ public class Sensor : ISensor
                 : state.Co2 < 300 ? state.Co2 + random.Next(20)
                 : state.Co2 + random.Next(-30, 30)
         };
+    }
+
+    #endregion
+    
+    #region Observer
+
+    public void Subscribe(ISubscriber subscriber)
+    {
+        _subscribers.Add(subscriber);
+    }
+
+    public void Unsubscribe(ISubscriber subscriber)
+    {
+        _subscribers.Add(subscriber);
+    }
+
+    public void Notify(ObserverLibrary.Models.Event @event)
+    {
+        foreach(var observer in _subscribers)
+            observer.Update(@event);
     }
 
     #endregion

@@ -1,12 +1,14 @@
 ﻿using System.Collections.Concurrent;
 using Grpc.Core;
+using ObserverLibrary.Interfaces;
+using ObserverLibrary.Models;
 
 namespace Weather.SensorService.GrpcServices;
 
-public class GeneratorService : Generator.GeneratorBase
+public class GeneratorService : Generator.GeneratorBase, ISubscriber
 {
     private readonly ILogger<GeneratorService> _logger;
-    private ConcurrentQueue<ServerResponse> _events = new();
+    private ConcurrentQueue<Event> _events = new();
 
     public GeneratorService(ILogger<GeneratorService> logger)
     {
@@ -60,5 +62,10 @@ public class GeneratorService : Generator.GeneratorBase
             _logger.LogInformation("Event from sensor id:{SensorId} for client id:{Client}", response.SensorId, connectionId);
             await responseStream.WriteAsync(response);
         }
+    }
+
+    public void Update(Event @event)
+    {
+        _events.Enqueue(@event);
     }
 }
