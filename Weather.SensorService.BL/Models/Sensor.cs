@@ -6,6 +6,7 @@ namespace Weather.SensorService.BL.Models;
 
 public class Sensor : ISensor, IPublisher
 {
+    // TODO : Add fluentValidator
     public Guid Id { get; init; } = Guid.NewGuid();
     public Event State { get; set; }
     public SensorSettings SensorSettings { get; init; }
