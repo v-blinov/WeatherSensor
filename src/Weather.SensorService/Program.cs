@@ -15,7 +15,8 @@ var logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
-builder.Services.Configure<List<InitializingSensor>>(builder.Configuration.GetSection("Sensors"));
+builder.Services.Configure<List<SensorSettings>>(builder.Configuration.GetSection("Sensors"));
+
 
 builder.Services.AddScoped<ISensorService, SensorService>();
 builder.Services.AddSingleton<ISensorStorage, SensorStorage>();
