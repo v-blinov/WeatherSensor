@@ -1,6 +1,8 @@
 using Serilog;
 using Weather.SensorService.BL.Services;
 using Weather.SensorService.BL.Services.Interfaces;
+using Weather.SensorService.BL.Storages;
+using Weather.SensorService.BL.Storages.Interfaces;
 using Weather.SensorService.GrpcServices;
 using Weather.SensorService.Models;
 
@@ -16,7 +18,8 @@ builder.Logging.AddSerilog(logger);
 builder.Services.Configure<List<InitializingSensor>>(builder.Configuration.GetSection("Sensors"));
 
 builder.Services.AddScoped<ISensorService, SensorService>();
-builder.Services.AddSingleton<ISensorService, SensorService>();
+builder.Services.AddSingleton<ISensorStorage, SensorStorage>();
+
 
 builder.Services.AddGrpcClient<Weather.SensorService.Generator.GeneratorClient>(options =>
 {
