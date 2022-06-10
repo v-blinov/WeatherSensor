@@ -6,15 +6,16 @@ namespace Weather.SensorService.BL.Models;
 
 public class Sensor : ISensor, IPublisher
 {
-    public Guid Id { get; init; }
-
-    private Event _state;
-    private readonly SensorSettings _sensorSettings;
+    public Guid Id { get; init; } = Guid.NewGuid();
+    public Event State { get; set; }
+    public SensorSettings SensorSettings { get; init; }
+    
     private List<ISubscriber> _subscribers = new();
+    
     public Sensor(Event state, SensorSettings sensorSettings)
     {
-        _state = state;
-        _sensorSettings = sensorSettings;
+        State = state;                   // TODO : Заполнить из конфига
+        SensorSettings = sensorSettings; // TODO : Заполнить из конфига
     }
 
     #region Generator
@@ -23,7 +24,7 @@ public class Sensor : ISensor, IPublisher
     {
         while(!cancellationToken.IsCancellationRequested)
         {
-            await Task.Delay(_sensorSettings.WorkInterval, cancellationToken);
+            await Task.Delay(SensorSettings.WorkInterval, cancellationToken);
             var @event = GenerateEvent();
 
             var observerEvent = new ObserverLibrary.Models.Event
@@ -45,18 +46,18 @@ public class Sensor : ISensor, IPublisher
         return new Event
         {
             CreatedAt = DateTime.UtcNow,
-            EventData = _sensorSettings.Type switch
+            EventData = SensorSettings.Type switch
             {
                 SensorType.Indoor => GenerateIndoorEventData(random),
                 SensorType.Outdoor => GenerateOutdoorEventData(random),
-                _ => _state.EventData
+                _ => State.EventData
             }
         };
     }
 
     private EventData GenerateIndoorEventData(Random random)
     {
-        var state = _state.EventData;
+        var state = State.EventData;
         return new EventData
         {
             Temperature = state.Temperature + (random.Next(-2, 2) * 0.1), 
@@ -67,7 +68,7 @@ public class Sensor : ISensor, IPublisher
 
     private EventData GenerateOutdoorEventData(Random random)
     {
-        var state = _state.EventData;
+        var state = State.EventData;
         return new EventData
         {
             Temperature = state.Temperature + (random.Next(-5, 5) * 0.1),
