@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.SensorService", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObserverLibrary", "src\ObserverLibrary\ObserverLibrary.csproj", "{310A1511-5993-4123-A1AD-4748D96FC72D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.SensorService.BL", "Weather.SensorService.BL\Weather.SensorService.BL.csproj", "{445C754E-F01A-4A6D-9DA8-476D93905720}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.SensorService.BL", "src\Weather.SensorService.BL\Weather.SensorService.BL.csproj", "{445C754E-F01A-4A6D-9DA8-476D93905720}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,6 +16,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{8F74384E-510C-4787-9BA4-8007BE20981D} = {1C27AB2A-B855-4CA2-B36A-342366853664}
 		{310A1511-5993-4123-A1AD-4748D96FC72D} = {1C27AB2A-B855-4CA2-B36A-342366853664}
+		{445C754E-F01A-4A6D-9DA8-476D93905720} = {1C27AB2A-B855-4CA2-B36A-342366853664}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{8F74384E-510C-4787-9BA4-8007BE20981D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
