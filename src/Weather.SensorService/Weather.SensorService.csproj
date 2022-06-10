@@ -10,4 +10,7 @@
         <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
     </ItemGroup>
     
+    <ItemGroup>
+      <ProjectReference Include="..\ObserverLibrary\ObserverLibrary.csproj" />
+    </ItemGroup>
 </Project>

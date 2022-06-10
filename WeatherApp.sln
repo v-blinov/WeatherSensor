@@ -4,6 +4,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1C27AB2A-B85
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.SensorService", "src\Weather.SensorService\Weather.SensorService.csproj", "{8F74384E-510C-4787-9BA4-8007BE20981D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObserverLibrary", "src\ObserverLibrary\ObserverLibrary.csproj", "{310A1511-5993-4123-A1AD-4748D96FC72D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -11,11 +13,16 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8F74384E-510C-4787-9BA4-8007BE20981D} = {1C27AB2A-B855-4CA2-B36A-342366853664}
+		{310A1511-5993-4123-A1AD-4748D96FC72D} = {1C27AB2A-B855-4CA2-B36A-342366853664}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{8F74384E-510C-4787-9BA4-8007BE20981D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8F74384E-510C-4787-9BA4-8007BE20981D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F74384E-510C-4787-9BA4-8007BE20981D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F74384E-510C-4787-9BA4-8007BE20981D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{310A1511-5993-4123-A1AD-4748D96FC72D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{310A1511-5993-4123-A1AD-4748D96FC72D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{310A1511-5993-4123-A1AD-4748D96FC72D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{310A1511-5993-4123-A1AD-4748D96FC72D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
