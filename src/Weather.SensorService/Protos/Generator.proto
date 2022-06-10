@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package Weather.SensorService;
+
+option csharp_namespace = "Weather.SensorService";
+
+import "google/protobuf/timestamp.proto";
+
+
+service Generator{
+    rpc SendEvents(stream ClientRequest) returns (stream ServerResponse);
+}
+
+message ClientRequest
+{
+    Operation operation= 1;
+    string sensor_id = 2;
+}
+
+enum Operation {
+    SUBSCRIBE = 0;
+    UNSUBSCRIBE = 1;
+}
+
+message ServerResponse
+{
+    string sensor_id = 1;
+
+    google.protobuf.Timestamp created_at = 2;
+    double temperature = 3;
+    double air_humidity = 4;
+    double co2 = 5;
+}

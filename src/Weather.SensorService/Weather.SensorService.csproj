@@ -10,4 +10,24 @@
         <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
     </ItemGroup>
     
+    <ItemGroup>
+        <PackageReference Include="Google.Protobuf" Version="3.20.1" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.46.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.46.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+
+        <Protobuf Include="Protos/Generator.proto" GrpServices="Server" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\..\Weather.SensorService.BL\Weather.SensorService.BL.csproj" />
+      <ProjectReference Include="..\ObserverLibrary\ObserverLibrary.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Enums" />
+    </ItemGroup>
+    
 </Project>
