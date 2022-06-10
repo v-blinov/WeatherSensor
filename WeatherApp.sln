@@ -8,6 +8,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObserverLibrary", "src\Obse
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.SensorService.BL", "src\Weather.SensorService.BL\Weather.SensorService.BL.csproj", "{445C754E-F01A-4A6D-9DA8-476D93905720}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.ProcessingService", "src\Weather.ProcessingService\Weather.ProcessingService.csproj", "{B777C43C-C9F8-4E74-86E0-6232DA450EFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessingService.BL", "src\ProcessingService.BL\ProcessingService.BL.csproj", "{6408125C-9FBC-4A3A-8520-D468B6B06BFE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +21,8 @@ Global
 		{8F74384E-510C-4787-9BA4-8007BE20981D} = {1C27AB2A-B855-4CA2-B36A-342366853664}
 		{310A1511-5993-4123-A1AD-4748D96FC72D} = {1C27AB2A-B855-4CA2-B36A-342366853664}
 		{445C754E-F01A-4A6D-9DA8-476D93905720} = {1C27AB2A-B855-4CA2-B36A-342366853664}
+		{B777C43C-C9F8-4E74-86E0-6232DA450EFD} = {1C27AB2A-B855-4CA2-B36A-342366853664}
+		{6408125C-9FBC-4A3A-8520-D468B6B06BFE} = {1C27AB2A-B855-4CA2-B36A-342366853664}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{8F74384E-510C-4787-9BA4-8007BE20981D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -31,5 +37,13 @@ Global
 		{445C754E-F01A-4A6D-9DA8-476D93905720}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{445C754E-F01A-4A6D-9DA8-476D93905720}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{445C754E-F01A-4A6D-9DA8-476D93905720}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B777C43C-C9F8-4E74-86E0-6232DA450EFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B777C43C-C9F8-4E74-86E0-6232DA450EFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B777C43C-C9F8-4E74-86E0-6232DA450EFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B777C43C-C9F8-4E74-86E0-6232DA450EFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6408125C-9FBC-4A3A-8520-D468B6B06BFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6408125C-9FBC-4A3A-8520-D468B6B06BFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6408125C-9FBC-4A3A-8520-D468B6B06BFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6408125C-9FBC-4A3A-8520-D468B6B06BFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
