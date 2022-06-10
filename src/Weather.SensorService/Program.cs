@@ -27,6 +27,7 @@ builder.Services.AddGrpcClient<Weather.SensorService.Generator.GeneratorClient>(
     options.Address = new Uri("https://localhost:7235");
 });
 
+builder.Services.AddGrpc();
 builder.Services.AddControllers();
 builder.Services.AddMvcCore();
 
