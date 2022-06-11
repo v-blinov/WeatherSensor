@@ -1,4 +1,6 @@
 using Serilog;
+using Weather.ProcessingService.BL.Storages;
+using Weather.ProcessingService.BL.Storages.Interfaces;
 using Weather.ProcessingService.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,9 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
 builder.Services.Configure<AggregatorSettings>(builder.Configuration.GetSection("AggregatorSettings"));
+
+builder.Services.AddSingleton<IEventStorage, EventStorage>();
+builder.Services.AddSingleton<IAggregatingStorage, AggregatingStorage>();
 
 builder.Services.AddGrpc();
 builder.Services.AddControllers();
