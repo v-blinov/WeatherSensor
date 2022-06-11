@@ -22,14 +22,9 @@ builder.Services.AddScoped<ISensorService, SensorService>();
 builder.Services.AddSingleton<ISensorStorage, SensorStorage>();
 
 
-builder.Services.AddGrpcClient<Weather.SensorService.Generator.GeneratorBase>(options =>
-{
-    options.Address = new Uri("https://localhost:7235");
-});
-
 builder.Services.AddGrpc();
 builder.Services.AddControllers();
-builder.Services.AddMvcCore();
+// builder.Services.AddMvcCore();
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddRouting(options =>
