@@ -1,4 +1,6 @@
 using Serilog;
+using Weather.ProcessingService.Options;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var logger = new LoggerConfiguration()
@@ -7,6 +9,8 @@ var logger = new LoggerConfiguration()
              .CreateLogger();
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
+
+builder.Services.Configure<AggregatorSettings>(builder.Configuration.GetSection("AggregatorSettings"));
 
 builder.Services.AddGrpc();
 builder.Services.AddControllers();
