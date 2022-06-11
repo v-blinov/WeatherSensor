@@ -1,4 +1,6 @@
 using Serilog;
+using Weather.ProcessingService.BL.Services;
+using Weather.ProcessingService.BL.Services.Interfaces;
 using Weather.ProcessingService.BL.Storages;
 using Weather.ProcessingService.BL.Storages.Interfaces;
 using Weather.ProcessingService.Options;
@@ -13,6 +15,10 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
 builder.Services.Configure<AggregatorSettings>(builder.Configuration.GetSection("AggregatorSettings"));
+
+// Пришлось сделать singlton для сервисов, т.к. требуются в IHostedService
+builder.Services.AddSingleton<IEventService, EventService>();
+builder.Services.AddSingleton<IAggregatingService, AggregatingService>();
 
 builder.Services.AddSingleton<IEventStorage, EventStorage>();
 builder.Services.AddSingleton<IAggregatingStorage, AggregatingStorage>();
