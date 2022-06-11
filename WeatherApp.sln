@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.SensorService.BL", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.ProcessingService", "src\Weather.ProcessingService\Weather.ProcessingService.csproj", "{B777C43C-C9F8-4E74-86E0-6232DA450EFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessingService.BL", "src\ProcessingService.BL\ProcessingService.BL.csproj", "{6408125C-9FBC-4A3A-8520-D468B6B06BFE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.ProcessingService.BL", "src\Weather.ProcessingService.BL\Weather.ProcessingService.BL.csproj", "{6408125C-9FBC-4A3A-8520-D468B6B06BFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
