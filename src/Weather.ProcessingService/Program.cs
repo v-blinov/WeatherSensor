@@ -3,6 +3,7 @@ using Weather.ProcessingService.BL.Services;
 using Weather.ProcessingService.BL.Services.Interfaces;
 using Weather.ProcessingService.BL.Storages;
 using Weather.ProcessingService.BL.Storages.Interfaces;
+using Weather.ProcessingService.HostedServices;
 using Weather.ProcessingService.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
 builder.Services.Configure<AggregatorSettings>(builder.Configuration.GetSection("AggregatorSettings"));
+
+builder.Services.AddHostedService<AggregatorWorker>();
 
 // Пришлось сделать singlton для сервисов, т.к. требуются в IHostedService
 builder.Services.AddSingleton<IEventService, EventService>();
