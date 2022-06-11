@@ -22,7 +22,7 @@ builder.Services.AddScoped<ISensorService, SensorService>();
 builder.Services.AddSingleton<ISensorStorage, SensorStorage>();
 
 
-builder.Services.AddGrpcClient<Weather.SensorService.Generator.GeneratorClient>(options =>
+builder.Services.AddGrpcClient<Weather.SensorService.Generator.GeneratorBase>(options =>
 {
     options.Address = new Uri("https://localhost:7235");
 });
