@@ -109,7 +109,7 @@ public class SensorController : Controller
         }
         catch(KeyNotFoundException ex)
         {
-            _logger.LogError("[Not Found]: {Error}", ex.Message);
+            _logger.LogError("[Not Found]: {SensorId}. {Error}", id, ex.Message);
             return NotFound();
         }
         catch(Exception ex)

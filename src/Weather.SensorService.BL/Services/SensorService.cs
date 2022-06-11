@@ -1,4 +1,5 @@
-﻿using Weather.SensorService.BL.Models;
+﻿using ObserverLibrary.Interfaces;
+using Weather.SensorService.BL.Models;
 using Weather.SensorService.BL.Models.Dtos;
 using Weather.SensorService.BL.Services.Interfaces;
 using Weather.SensorService.BL.Storages.Interfaces;
@@ -86,7 +87,7 @@ public class SensorService : ISensorService
         return sensorDto;
     }
 
-    IEnumerable<SensorDto> ISensorService.GetSensors()
+    public IEnumerable<SensorDto> GetSensors()
     {
         var sensors = _sensorStorage.GetSensors();
         
@@ -113,7 +114,7 @@ public class SensorService : ISensorService
         return sensorsDtos;
     }
 
-    IEnumerable<SensorDto> ISensorService.GetSensors(IEnumerable<Guid> ids)
+    public IEnumerable<SensorDto> GetSensors(IEnumerable<Guid> ids)
     {
         var sensors = _sensorStorage.GetSensors(ids);
         
@@ -144,5 +145,17 @@ public class SensorService : ISensorService
     {
         var sensors = _sensorStorage.GetSensors();
         return sensors.Select(sensor => sensor.Id).ToArray();
+    }
+
+    public void TrySubscribe(ISubscriber subscriber, Guid sensorId)
+    {
+        var sensor = _sensorStorage.GetSensor(sensorId);
+        sensor.Subscribe(subscriber);
+    }
+
+    public void TryUnsubscribe(ISubscriber subscriber, Guid sensorId)
+    {
+        var sensor = _sensorStorage.GetSensor(sensorId);
+        sensor.Unsubscribe(subscriber);
     }
 }
