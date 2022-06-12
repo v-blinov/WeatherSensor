@@ -41,7 +41,7 @@ public class AggregatorWorker : BackgroundService
             var dtCheck = new DateTime(dtNow.Year, dtNow.Month, dtNow.Day, dtNow.Hour, dtNow.Minute, 0);
             
             var difference = dtCheck - lastTimeWork;
-            if(difference.Minutes * 60 <= _settings.AggregationPeriod)
+            if(difference.Minutes * 60 + difference.Seconds < _settings.AggregationPeriod)
             {
                 await Task.Delay(TimeSpan.FromSeconds(_settings.WaitingTime), stoppingToken);
                 continue;

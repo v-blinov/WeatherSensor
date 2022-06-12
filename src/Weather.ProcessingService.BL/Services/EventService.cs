@@ -68,8 +68,8 @@ public class EventService : IEventService
         
         var period = new Period
         {
-            From = periodDto.From.ToUniversalTime(), 
-            To = periodDto.To.ToUniversalTime()
+            From = periodDto.From, 
+            To = periodDto.To
         };
         
         var eventsBySensors = _eventStorage.GetEventsForPeriod(period);
