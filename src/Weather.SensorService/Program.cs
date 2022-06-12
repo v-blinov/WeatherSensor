@@ -1,6 +1,8 @@
 using Serilog;
 using Weather.SensorService.BL.Services;
 using Weather.SensorService.BL.Services.Interfaces;
+using Weather.SensorService.BL.Storages;
+using Weather.SensorService.BL.Storages.Interfaces;
 using Weather.SensorService.GrpcServices;
 using Weather.SensorService.Models;
 
@@ -13,20 +15,32 @@ var logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
-builder.Services.Configure<List<InitializingSensor>>(builder.Configuration.GetSection("Sensors"));
+builder.Services.Configure<List<SensorSettings>>(builder.Configuration.GetSection("Sensors"));
+
 
 builder.Services.AddScoped<ISensorService, SensorService>();
-builder.Services.AddSingleton<ISensorService, SensorService>();
+builder.Services.AddSingleton<ISensorStorage, SensorStorage>();
 
-builder.Services.AddGrpcClient<Weather.SensorService.Generator.GeneratorClient>(options =>
+
+builder.Services.AddGrpc();
+builder.Services.AddControllers();
+// builder.Services.AddMvcCore();
+
+builder.Services.AddSwaggerGen();
+builder.Services.AddRouting(options =>
 {
-    options.Address = new Uri("https://localhost:7235");
+    options.LowercaseUrls = true;
+    options.LowercaseQueryStrings = true;
 });
 
-builder.Services.AddControllers();
-builder.Services.AddMvcCore();
-
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    options.RoutePrefix = string.Empty;
+});
 
 app.UseRouting();
 app.UseEndpoints(

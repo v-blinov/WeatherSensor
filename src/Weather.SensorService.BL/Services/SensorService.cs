@@ -1,4 +1,5 @@
-﻿using Weather.SensorService.BL.Models;
+﻿using ObserverLibrary.Interfaces;
+using Weather.SensorService.BL.Models;
 using Weather.SensorService.BL.Models.Dtos;
 using Weather.SensorService.BL.Services.Interfaces;
 using Weather.SensorService.BL.Storages.Interfaces;
@@ -86,9 +87,75 @@ public class SensorService : ISensorService
         return sensorDto;
     }
 
-    IEnumerable<SensorDto> ISensorService.GetSensors() => throw new NotImplementedException();
+    public IEnumerable<SensorDto> GetSensors()
+    {
+        var sensors = _sensorStorage.GetSensors();
+        
+        var sensorsDtos = sensors.Select(sensor => new SensorDto
+        {
+            Id = sensor.Id,
+            SensorSettings = new SensorSettingDto
+            {
+                Type = sensor.SensorSettings.Type,
+                WorkInterval = sensor.SensorSettings.WorkInterval
+            },
+            Event = new EventDto
+            {
+                CreatedAt = sensor.State.CreatedAt,
+                EventData = new EventDataDto
+                {
+                    Temperature = sensor.State.EventData.Temperature,
+                    AirHumidity = sensor.State.EventData.AirHumidity,
+                    Co2 = sensor.State.EventData.Co2,
+                }
+            }
+        }).ToArray();
 
-    IEnumerable<SensorDto> ISensorService.GetSensors(IEnumerable<Guid> ids) => throw new NotImplementedException();
-    
-    public IEnumerable<Guid> GetSensorIds() => throw new NotImplementedException();
+        return sensorsDtos;
+    }
+
+    public IEnumerable<SensorDto> GetSensors(IEnumerable<Guid> ids)
+    {
+        var sensors = _sensorStorage.GetSensors(ids);
+        
+        var sensorsDtos = sensors.Select(sensor => new SensorDto
+        {
+            Id = sensor.Id,
+            SensorSettings = new SensorSettingDto
+            {
+                Type = sensor.SensorSettings.Type,
+                WorkInterval = sensor.SensorSettings.WorkInterval
+            },
+            Event = new EventDto
+            {
+                CreatedAt = sensor.State.CreatedAt,
+                EventData = new EventDataDto
+                {
+                    Temperature = sensor.State.EventData.Temperature,
+                    AirHumidity = sensor.State.EventData.AirHumidity,
+                    Co2 = sensor.State.EventData.Co2,
+                }
+            }
+        }).ToArray();
+
+        return sensorsDtos;
+    }
+
+    public IEnumerable<Guid> GetSensorIds()
+    {
+        var sensors = _sensorStorage.GetSensors();
+        return sensors.Select(sensor => sensor.Id).ToArray();
+    }
+
+    public void TrySubscribe(ISubscriber subscriber, Guid sensorId)
+    {
+        var sensor = _sensorStorage.GetSensor(sensorId);
+        sensor.Subscribe(subscriber);
+    }
+
+    public void TryUnsubscribe(ISubscriber subscriber, Guid sensorId)
+    {
+        var sensor = _sensorStorage.GetSensor(sensorId);
+        sensor.Unsubscribe(subscriber);
+    }
 }

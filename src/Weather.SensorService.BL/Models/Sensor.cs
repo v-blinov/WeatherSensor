@@ -25,7 +25,7 @@ public class Sensor : ISensor, IPublisher
     {
         while(!cancellationToken.IsCancellationRequested)
         {
-            await Task.Delay(SensorSettings.WorkInterval, cancellationToken);
+            await Task.Delay(TimeSpan.FromMilliseconds(SensorSettings.WorkInterval), cancellationToken);
             var @event = GenerateEvent();
 
             var observerEvent = new ObserverLibrary.Models.Event
@@ -91,13 +91,13 @@ public class Sensor : ISensor, IPublisher
 
     public void Unsubscribe(ISubscriber subscriber)
     {
-        _subscribers.Add(subscriber);
+        _subscribers.Remove(subscriber);
     }
 
     public void Notify(ObserverLibrary.Models.Event @event)
     {
-        foreach(var observer in _subscribers)
-            observer.Update(@event);
+        foreach(var subscriber in _subscribers)
+            subscriber.UpdateSensorEventsQueue(@event);
     }
 
     #endregion

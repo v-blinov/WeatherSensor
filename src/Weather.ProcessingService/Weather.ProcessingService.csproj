@@ -14,17 +14,12 @@
     <ItemGroup>
         <PackageReference Include="Google.Protobuf" Version="3.20.1" />
         <PackageReference Include="Grpc.AspNetCore" Version="2.46.0" />
-        <PackageReference Include="Grpc.Tools" Version="2.46.1">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
 
-        <Protobuf Include="Protos/Generator.proto" GrpServices="Server" />
+        <Protobuf Include="Protos/Generator.proto" GrcpServices="Client" />
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\Weather.SensorService.BL\Weather.SensorService.BL.csproj" />
-      <ProjectReference Include="..\ObserverLibrary\ObserverLibrary.csproj" />
+      <ProjectReference Include="..\Weather.ProcessingService.BL\Weather.ProcessingService.BL.csproj" />
     </ItemGroup>
-    
+
 </Project>

@@ -5,5 +5,5 @@ namespace ObserverLibrary.Interfaces;
 public interface ISubscriber
 {
     // Получаем обновление от издателя
-    void Update(Event @event);
+    void UpdateSensorEventsQueue(Event @event);
 }

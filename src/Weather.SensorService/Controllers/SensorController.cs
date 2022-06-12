@@ -9,14 +9,14 @@ namespace Weather.SensorService.Controllers;
 [Route("sensor")]
 public class SensorController : Controller
 {
-    private readonly IOptions<List<InitializingSensor>> _options;
+    private readonly List<SensorSettings> _options;
     
     private readonly ILogger<SensorController> _logger;
     private readonly ISensorService _sensorService;
 
-    public SensorController(IOptions<List<InitializingSensor>> options, ILogger<SensorController> logger, ISensorService sensorService)
+    public SensorController(IOptions<List<SensorSettings>> options, ILogger<SensorController> logger, ISensorService sensorService)
     {
-        _options = options;
+        _options = options.Value;
         _logger = logger;
         _sensorService = sensorService;
     }
@@ -28,27 +28,36 @@ public class SensorController : Controller
         {
             _logger.LogInformation("Try initialize sensors");
 
-            var initializingSensors = _options.Value;
-            if(initializingSensors is null)
+            var sensorsSettings = _options;
+            if(sensorsSettings is null)
             {
                 _logger.LogInformation("Initializing data not found");
                 return NotFound("Initializing data");
             }
 
-            if(!initializingSensors.Any())
+            if(!sensorsSettings.Any())
             {
                 _logger.LogInformation("Initializing Data is Empty");
-                return Ok();
+                return Ok("Initializing Data is Empty");
             }
 
-            var sensorDtos = initializingSensors.Select(p => new SensorDto
+            var sensorDtos = sensorsSettings.Select(p => new SensorDto
             {
                 Id = Guid.NewGuid(),
-                SensorSettings = new SensorSettingDto { Type = p.SensorSettings.SensorType, WorkInterval = p.SensorSettings.WorkInterval },
+                SensorSettings = new SensorSettingDto
+                {
+                    Type = p.SensorType, 
+                    WorkInterval = p.WorkInterval
+                },
                 Event = new EventDto
                 {
                     CreatedAt = DateTime.UtcNow,
-                    EventData = new EventDataDto { Temperature = p.SensorSettings.InitializeEventValues.Temperature, AirHumidity = p.SensorSettings.InitializeEventValues.AirHumidity, Co2 = p.SensorSettings.InitializeEventValues.Co2 }
+                    EventData = new EventDataDto
+                    {
+                        Temperature = p.InitializeEventValues.Temperature, 
+                        AirHumidity = p.InitializeEventValues.AirHumidity, 
+                        Co2 = p.InitializeEventValues.Co2
+                    }
                 }
             }).ToArray();
 
@@ -68,7 +77,7 @@ public class SensorController : Controller
         }
     }
 
-    [HttpGet]
+    [HttpGet("sensors")]
     public ActionResult<IEnumerable<string>> GetSensors()
     {
         try
@@ -100,7 +109,7 @@ public class SensorController : Controller
         }
         catch(KeyNotFoundException ex)
         {
-            _logger.LogError("[Not Found]: {Error}", ex.Message);
+            _logger.LogError("[Not Found]: {SensorId}. {Error}", id, ex.Message);
             return NotFound();
         }
         catch(Exception ex)
