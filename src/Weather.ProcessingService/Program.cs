@@ -4,6 +4,7 @@ using Weather.ProcessingService.BL.Services.Interfaces;
 using Weather.ProcessingService.BL.Storages;
 using Weather.ProcessingService.BL.Storages.Interfaces;
 using Weather.ProcessingService.HostedServices;
+using Weather.ProcessingService.Interceptors;
 using Weather.ProcessingService.Options;
 using Weather.ProcessingService.Services;
 using Weather.ProcessingService.Services.Interfaces;
@@ -20,6 +21,8 @@ builder.Logging.AddSerilog(logger);
 
 builder.Services.Configure<AggregatorSettings>(builder.Configuration.GetSection("AggregatorSettings"));
 
+builder.Services.AddScoped<RetryInterceptor>();
+
 // Пришлось сделать singlton для сервисов, т.к. требуются в IHostedService
 builder.Services.AddSingleton<IEventService, EventService>();
 builder.Services.AddSingleton<IAggregatingService, AggregatingService>();
@@ -33,7 +36,10 @@ builder.Services.AddHostedService<StreamReaderHostedService>();
 
 builder.Services.AddControllers();
 builder.Services.AddGrpcClient<Generator.GeneratorClient>(
-    options => { options.Address = new Uri("https://localhost:7200/"); });
+           options =>
+           {
+               options.Address = new Uri("https://localhost:7200/"); 
+           }).AddInterceptor<RetryInterceptor>();;
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddRouting(options =>
