@@ -5,6 +5,22 @@ namespace Weather.SensorService.BL.Models;
 public record SensorSettings
 {
     // TODO : Add fluentValidator
-    public int WorkInterval { get; init; } 
+    private int workInterval;
+    public int WorkInterval
+    {
+        get
+        {
+            return workInterval;
+        }
+        init
+        {
+            workInterval = workInterval switch
+            {
+                > 2000 => 2000,
+                < 100 => 100,
+                _ => value
+            };
+        }
+    } 
     public SensorType Type { get; init; } 
 }
