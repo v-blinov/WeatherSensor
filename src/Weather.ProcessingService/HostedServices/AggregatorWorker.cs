@@ -1,7 +1,10 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
+using Microsoft.Extensions.Options;
 using Weather.ProcessingService.BL.Models.Dtos;
 using Weather.ProcessingService.BL.Services.Interfaces;
 using Weather.ProcessingService.Options;
+using Weather.SensorService;
 
 namespace Weather.ProcessingService.HostedServices;
 
@@ -15,7 +18,7 @@ public class AggregatorWorker : BackgroundService
     private DateTime lastTimeWork;
 
     public AggregatorWorker(IOptions<AggregatorSettings> settings, 
-        ILogger<AggregatorWorker> logger, 
+        ILogger<AggregatorWorker> logger,
         IEventService eventService, 
         IAggregatingService aggregatingService)
     {
@@ -24,7 +27,7 @@ public class AggregatorWorker : BackgroundService
         _eventService = eventService;
         _aggregatingService = aggregatingService;
 
-        var dtNow = DateTime.UtcNow.AddMinutes(-5);  // TODO: remove AddMinutes
+        var dtNow = DateTime.UtcNow;
         lastTimeWork = new DateTime(dtNow.Year, dtNow.Month, dtNow.Day, dtNow.Hour, dtNow.Minute, 0);
     }
 
