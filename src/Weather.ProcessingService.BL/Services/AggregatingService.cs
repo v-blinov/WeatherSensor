@@ -21,8 +21,8 @@ public class AggregatingService : IAggregatingService
             SensorId = sensorId,
             Period = new Period
             {
-                From = new DateTime(periodDto.From.Year, periodDto.From.Month, periodDto.From.Day, periodDto.From.Hour, periodDto.From.Minute, 0).ToUniversalTime(),
-                To = new DateTime(periodDto.To.Year, periodDto.To.Month, periodDto.To.Day, periodDto.To.Hour, periodDto.To.Minute, 0).ToUniversalTime()
+                From = new DateTime(periodDto.From.Year, periodDto.From.Month, periodDto.From.Day, periodDto.From.Hour, periodDto.From.Minute, 0),
+                To = new DateTime(periodDto.To.Year, periodDto.To.Month, periodDto.To.Day, periodDto.To.Hour, periodDto.To.Minute, 0)
             },
             AverageTemperature = eventDtos.Average(e => e.Temperature),
             AverageAirHumidity = eventDtos.Average(e => e.AirHumidity),
@@ -61,7 +61,7 @@ public class AggregatingService : IAggregatingService
 
     public IEnumerable<AggregatedDataDto> GetAggregatedDataForInterval(DateTime from, int durationInMinutes, Guid sensorId)
     {
-        var to = from.AddMinutes(-durationInMinutes);
+        var to = from.AddMinutes(durationInMinutes);
         return GetAggregatedDataForIntervalInternal(from, to, sensorId);
     }
 
@@ -72,7 +72,7 @@ public class AggregatingService : IAggregatingService
 
     public Dictionary<Guid, IEnumerable<AggregatedDataDto>> GetAggregatedDataForInterval(DateTime from, int durationInMinutes)
     {
-        var to = from.AddMinutes(-durationInMinutes);
+        var to = from.AddMinutes(durationInMinutes);
         return GetAggregatedDataForIntervalInternal(from, to);
     }
 
@@ -100,8 +100,8 @@ public class AggregatingService : IAggregatingService
     {
         var period = new Period
         {
-            From = new(from.Year, from.Month, from.Day, from.Hour, from.Minute, 0),
-            To = new(to.Year, to.Month, to.Day, to.Hour, to.Minute, 0)
+            From = (new DateTime(from.Year, from.Month, from.Day, from.Hour, from.Minute, 0)).ToUniversalTime(),
+            To = (new DateTime(to.Year, to.Month, to.Day, to.Hour, to.Minute, 0)).ToUniversalTime(),
         };
 
         var result = new Dictionary<Guid, IEnumerable<AggregatedDataDto>>();

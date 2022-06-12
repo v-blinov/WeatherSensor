@@ -5,6 +5,8 @@ using Weather.ProcessingService.BL.Storages;
 using Weather.ProcessingService.BL.Storages.Interfaces;
 using Weather.ProcessingService.HostedServices;
 using Weather.ProcessingService.Options;
+using Weather.ProcessingService.Services;
+using Weather.ProcessingService.Services.Interfaces;
 using Weather.SensorService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,15 +20,16 @@ builder.Logging.AddSerilog(logger);
 
 builder.Services.Configure<AggregatorSettings>(builder.Configuration.GetSection("AggregatorSettings"));
 
-builder.Services.AddHostedService<AggregatorWorker>();
-builder.Services.AddHostedService<StreamReaderHostedService>();
-
 // Пришлось сделать singlton для сервисов, т.к. требуются в IHostedService
 builder.Services.AddSingleton<IEventService, EventService>();
 builder.Services.AddSingleton<IAggregatingService, AggregatingService>();
 
+builder.Services.AddSingleton<ILocalRequestQueueService, LocalRequestQueueService>();
 builder.Services.AddSingleton<IEventStorage, EventStorage>();
 builder.Services.AddSingleton<IAggregatingStorage, AggregatingStorage>();
+
+builder.Services.AddHostedService<AggregatorWorker>();
+builder.Services.AddHostedService<StreamReaderHostedService>();
 
 builder.Services.AddControllers();
 builder.Services.AddGrpcClient<Generator.GeneratorClient>(

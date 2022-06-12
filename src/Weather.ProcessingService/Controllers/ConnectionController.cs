@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Weather.ProcessingService.Services.Interfaces;
 using Weather.SensorService;
 
 namespace Weather.ProcessingService.Controllers;
@@ -7,12 +8,12 @@ namespace Weather.ProcessingService.Controllers;
 public class ConnectionController: Controller
 {
     private readonly ILogger<ConnectionController> _logger;
-    private readonly Generator.GeneratorClient _generator;
+    private readonly ILocalRequestQueueService _localRequestQueueService;
 
-    public ConnectionController(ILogger<ConnectionController> logger, Generator.GeneratorClient generator)
+    public ConnectionController(ILogger<ConnectionController> logger, ILocalRequestQueueService localRequestQueueService)
     {
         _logger = logger;
-        _generator = generator;
+        _localRequestQueueService = localRequestQueueService;
     }
 
     [HttpGet]
@@ -22,10 +23,9 @@ public class ConnectionController: Controller
         {
             _logger.LogInformation("Try to {Operation} to sensor with id:{SensorId}", operation, sensorId);
             var request = new ClientRequest { SensorId = sensorId.ToString(), Operation = operation };
-         
-            // не работает..
-            // var eventsk = _generator.SendEvents(request);
-            // _generator.SendEvents();
+            
+            _localRequestQueueService.Enqueue(request);
+
             return Ok();
         }
         catch(Exception ex)

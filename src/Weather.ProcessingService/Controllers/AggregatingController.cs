@@ -97,6 +97,11 @@ public class AggregatingController : Controller
             _logger.LogError("[Not Found]: {SensorId}. {Error}", sensorId, ex.Message);
             return NotFound();
         }
+        catch(ArgumentException ex)
+        {
+            _logger.LogError("[Argument Exception]: {Error}", ex.Message);
+            return BadRequest();
+        }
         catch(Exception ex)
         {
             _logger.LogError("[Internal Server Error]: {Error}", ex.Message);
