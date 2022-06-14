@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using Weather.ProcessingService.BL.Models;
 using Weather.ProcessingService.BL.Storages.Interfaces;
 
@@ -8,12 +8,17 @@ public class AggregatingStorage : IAggregatingStorage
 {
     private readonly ConcurrentDictionary<Guid, List<AggregatedData>> _storage = new();
 
+    private readonly object _locker = new();
+    
     public void Add(AggregatedData aggregatedData)
     {
-        if(!_storage.ContainsKey(aggregatedData.SensorId))
-            _storage[aggregatedData.SensorId] = new List<AggregatedData>();
-
-        _storage[aggregatedData.SensorId].Add(aggregatedData);
+        lock(_locker)
+        {
+            if(_storage.ContainsKey(aggregatedData.SensorId))
+                _storage[aggregatedData.SensorId].Add(aggregatedData);
+            else 
+                _storage[aggregatedData.SensorId] = new List<AggregatedData> { aggregatedData };
+        }
     }
 
     public IDictionary<Guid, IEnumerable<AggregatedData>> GetAggregatedData()

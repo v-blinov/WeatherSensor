@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using Weather.ProcessingService.BL.Models;
 using Weather.ProcessingService.BL.Storages.Interfaces;
 
@@ -8,12 +8,18 @@ public class EventStorage : IEventStorage
 {
     private readonly ConcurrentDictionary<Guid, List<Event>> _storage = new();
 
+    private readonly object _locker = new();
+    
     public void Add(Event @event)
     {
-        if(!_storage.ContainsKey(@event.SensorId))
-            _storage[@event.SensorId] = new List<Event>();
-
-        _storage[@event.SensorId].Add(@event);
+        // AddOrUpdate вроде не обеспечивает нужной защищенности, поэтому lock
+        lock(_locker)
+        {
+            if(_storage.ContainsKey(@event.SensorId))
+                _storage[@event.SensorId].Add(@event);
+            else 
+                _storage[@event.SensorId] = new List<Event> { @event };
+        }
     }
 
     public IEnumerable<Event> GetEvents(Guid sensorId)
