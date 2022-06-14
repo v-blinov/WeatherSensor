@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using Weather.ProcessingService.BL.Models;
 using Weather.ProcessingService.BL.Storages.Interfaces;
 
@@ -24,10 +24,7 @@ public class EventStorage : IEventStorage
 
     public IEnumerable<Event> GetEvents(Guid sensorId)
     {
-        if(!_storage.TryGetValue(sensorId, out var events))
-            throw new KeyNotFoundException();
-
-        return events.ToArray();
+        return _storage[sensorId];
     }
 
     public IDictionary<Guid, IEnumerable<Event>> GetEvents(IEnumerable<Guid> sensorIds)
@@ -55,9 +52,7 @@ public class EventStorage : IEventStorage
 
     public IEnumerable<Event> GetEventsForPeriod(Guid sensorId, Period period)
     {
-        if(!_storage.TryGetValue(sensorId, out var events))
-            throw new KeyNotFoundException();
-
+        var events = _storage[sensorId];
         return events.Where(e => period.From <= e.CreatedAt && e.CreatedAt <= period.To).ToArray();
     }
 

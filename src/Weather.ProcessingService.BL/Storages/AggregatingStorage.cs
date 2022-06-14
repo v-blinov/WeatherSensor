@@ -1,4 +1,4 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using Weather.ProcessingService.BL.Models;
 using Weather.ProcessingService.BL.Storages.Interfaces;
 
@@ -41,10 +41,7 @@ public class AggregatingStorage : IAggregatingStorage
     
     public IEnumerable<AggregatedData> GetAggregatedDataBySensorId(Guid sensorId)
     {
-        if (!_storage.TryGetValue(sensorId, out var data))
-            throw new KeyNotFoundException();
-
-        return data.ToArray();
+        return _storage[sensorId];
     }
     
     public IEnumerable<AggregatedData> GetAggregatedDataBySensorIdForPeriod(Guid sensorId, Period period)
@@ -57,10 +54,7 @@ public class AggregatingStorage : IAggregatingStorage
         var dataBySensors = new Dictionary<Guid, IEnumerable<AggregatedData>>();
         foreach(var sensorId in sensorIds)
         {
-            if (!_storage.TryGetValue(sensorId, out var data))
-                throw new KeyNotFoundException();
-
-            dataBySensors[sensorId] = data.ToArray();
+            dataBySensors[sensorId] = _storage[sensorId].ToArray();
         }
         
         return dataBySensors;
@@ -71,9 +65,6 @@ public class AggregatingStorage : IAggregatingStorage
         var dataBySensors = new Dictionary<Guid, IEnumerable<AggregatedData>>();
         foreach(var sensorId in sensorIds)
         {
-            if (!_storage.TryGetValue(sensorId, out var data))
-                throw new KeyNotFoundException();
-
             dataBySensors[sensorId] = GetAggregatingDataBySensorInternal(sensorId, period);
         }
         
@@ -85,8 +76,7 @@ public class AggregatingStorage : IAggregatingStorage
         if(period.From.CompareTo(period.To) > 0)
             throw new ArgumentException($"Datetime From ({period.From}) couldn't bu more then datetime To ({period.To})");
 
-        if(!_storage.TryGetValue(sensorId, out var aggregatingData))
-            throw new KeyNotFoundException();
+        var aggregatingData = _storage[sensorId];
 
         var from = new DateTime(period.From.Year, period.From.Month, period.From.Day, period.From.Hour, period.From.Minute, 0);
         var to = new DateTime(period.To.Year, period.To.Month, period.To.Day, period.To.Hour, period.To.Minute, 0);
