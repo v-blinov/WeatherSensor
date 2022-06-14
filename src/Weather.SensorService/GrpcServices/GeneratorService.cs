@@ -16,7 +16,7 @@ public class GeneratorService : Generator.GeneratorBase, ISubscriber
     // TODO : нарушение слоев
     private readonly ISensorStorage _sensorStorage;
 
-    private ConcurrentQueue<Event> _events = new();
+    private ConcurrentQueue<EventItem> _events = new();
 
     public GeneratorService(ILogger<GeneratorService> logger, ISensorService sensorService, ISensorStorage sensorStorage)
     {
@@ -43,9 +43,9 @@ public class GeneratorService : Generator.GeneratorBase, ISubscriber
         }
     }
 
-    public void UpdateSensorEventsQueue(Event @event)
+    public void UpdateSensorEventsQueue(EventItem eventItem)
     {
-        _events.Enqueue(@event);
+        _events.Enqueue(eventItem);
     }
 
     private async Task SubscriberRequestHandlingAsync(IAsyncStreamReader<ClientRequest> requestStream, ServerCallContext context)
@@ -77,9 +77,6 @@ public class GeneratorService : Generator.GeneratorBase, ISubscriber
     private async Task PublisherEventSendingAsync(IServerStreamWriter<ServerResponse> responseStream, ServerCallContext context)
     {
         var connectionId = context.GetHttpContext();
-        var tasks = _sensorStorage.GetSensors()
-                                  .Select(sensor => sensor.StreamGeneration(context.CancellationToken))
-                                  .ToList();
 
         while(!context.CancellationToken.IsCancellationRequested)
         {

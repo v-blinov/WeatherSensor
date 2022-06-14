@@ -6,5 +6,5 @@ public interface IPublisher
 {
     void Subscribe(ISubscriber subscriber);
     void Unsubscribe(ISubscriber subscriber);
-    void Notify(Event @event);
+    void Notify(EventItem eventItem);
 }

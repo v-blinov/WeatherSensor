@@ -1,23 +1,23 @@
-﻿using Weather.SensorService.BL.Models;
+﻿using Weather.SensorService.BL.Models.Interfaces;
 using Weather.SensorService.BL.Storages.Interfaces;
 
 namespace Weather.SensorService.BL.Storages;
 
 public class SensorStorage : ISensorStorage
 {
-    private readonly List<Sensor> _storage = new();
+    private readonly List<ISensor> _storage = new();
 
-    public void Add(Sensor sensor)
+    public void Add(ISensor sensor)
     {
         _storage.Add(sensor);
     }
 
-    public void AddRange(IEnumerable<Sensor> sensors)
+    public void AddRange(IEnumerable<ISensor> sensors)
     {
         _storage.AddRange(sensors);
     }
     
-    public Sensor GetSensor(Guid id)
+    public ISensor GetSensor(Guid id)
     {
         var sensor = _storage.FirstOrDefault(p => p.Id == id);
         if (sensor is null)
@@ -26,31 +26,8 @@ public class SensorStorage : ISensorStorage
         return sensor;
     }
 
-    public IEnumerable<Sensor> GetSensors()
+    public IEnumerable<ISensor> GetSensors()
     {
         return _storage.ToArray();
-    }
-    
-    public IEnumerable<Sensor> GetSensors(IEnumerable<Guid> ids)
-    {
-        if(!ids.Any())
-            return Enumerable.Empty<Sensor>();
-        
-        var sensors = new List<Sensor>(ids.Count());
-        foreach(var id in ids)
-        {
-            var sensor = _storage.FirstOrDefault(p => p.Id == id);
-            if (sensor is null)
-                throw new KeyNotFoundException(id.ToString());
-            
-            sensors.Add(sensor);
-        } 
-
-        return sensors;
-    }
-
-    public IEnumerable<Guid> GetSensorIds()
-    {
-        return _storage.Select(p => p.Id).ToArray();
     }
 }

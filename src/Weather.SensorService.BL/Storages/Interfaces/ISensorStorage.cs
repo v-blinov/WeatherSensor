@@ -1,13 +1,11 @@
-﻿using Weather.SensorService.BL.Models;
+﻿using Weather.SensorService.BL.Models.Interfaces;
 
 namespace Weather.SensorService.BL.Storages.Interfaces;
 
 public interface ISensorStorage
 {
-    public void Add(Sensor sensor);
-    public void AddRange(IEnumerable<Sensor> sensors);
-    public Sensor GetSensor(Guid id);
-    public IEnumerable<Sensor> GetSensors();
-    public IEnumerable<Sensor> GetSensors(IEnumerable<Guid> ids);
-    public IEnumerable<Guid> GetSensorIds();
+    public void Add(ISensor sensor);
+    public void AddRange(IEnumerable<ISensor> sensors);
+    public ISensor GetSensor(Guid id);
+    public IEnumerable<ISensor> GetSensors();
 }
