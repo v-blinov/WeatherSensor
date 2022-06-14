@@ -68,8 +68,8 @@ public class GeneratorService : Generator.GeneratorBase, ISubscriber
             }
             catch(Exception ex)
             {
-                _logger.LogError("Client {Client} fail with trying to {Operation} to(of) {SensorId}", connectionId, request.Operation, request.SensorId);
-                _logger.LogError(ex.Message);
+                _logger.LogError(ex, "Client {Client} fail with trying to {Operation} to(of) {SensorId}", connectionId, request.Operation, request.SensorId);
+                throw new RpcException(new Status(StatusCode.Internal, ex.Message));
             }
         }
     }

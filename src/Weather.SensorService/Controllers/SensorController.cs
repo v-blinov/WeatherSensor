@@ -27,12 +27,12 @@ public class SensorController : Controller
         }
         catch(KeyNotFoundException ex)
         {
-            _logger.LogError("[Not Found]: {Error}", ex.Message);
+            _logger.LogError(ex, "[Not Found]");
             return NotFound();
         }
         catch(Exception ex)
         {
-            _logger.LogError("[Internal Server Error]: {Error}", ex.Message);
+            _logger.LogError(ex, "[Internal Server Error]");
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
@@ -48,12 +48,12 @@ public class SensorController : Controller
         }
         catch(KeyNotFoundException ex)
         {
-            _logger.LogError("[Not Found]: {SensorId}. {Error}", id, ex.Message);
+            _logger.LogError(ex, "[Not Found]: {SensorId}", id);
             return NotFound();
         }
         catch(Exception ex)
         {
-            _logger.LogError("[Internal Server Error]: {Error}", ex.Message);
+            _logger.LogError(ex, "[Internal Server Error]");
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }

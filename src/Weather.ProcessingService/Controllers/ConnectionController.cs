@@ -30,7 +30,7 @@ public class ConnectionController: Controller
         }
         catch(Exception ex)
         {
-            _logger.LogError("[Internal Server Error]: {Error}", ex.Message);
+            _logger.LogError(ex, "[Internal Server Error]");
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }

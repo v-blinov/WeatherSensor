@@ -58,7 +58,7 @@ public class StreamReaderHostedService : BackgroundService
         }
         catch(RpcException ex)
         {
-            _logger.LogError("Rpc exception {ExceptionMessage}", ex.Message);
+            _logger.LogError(ex, "Rpc exception");
             // TODO: обработать ошибку
         }
     }
@@ -84,7 +84,7 @@ public class StreamReaderHostedService : BackgroundService
         }
         catch(RpcException ex)
         {
-            _logger.LogError("Rpc exception {ExceptionMessage}", ex.Message);
+            _logger.LogError(ex, "Rpc exception");
             // TODO: обработать ошибку
         }
     }
