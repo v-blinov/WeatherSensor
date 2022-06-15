@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Threading.Channels;
 using Weather.ProcessingService.Services.Interfaces;
 using Weather.SensorService;
 
@@ -6,16 +6,22 @@ namespace Weather.ProcessingService.Services;
 
 public class LocalRequestQueueService : ILocalRequestQueueService
 {
-    private ConcurrentQueue<ClientRequest> _queue = new ();
-
-    public void Enqueue(ClientRequest request)
+    private static readonly BoundedChannelOptions Params = new(1)
     {
-        _queue.Enqueue(request);
+        SingleReader = true,
+        SingleWriter = true,
+        FullMode = BoundedChannelFullMode.Wait
+    };
+
+    private readonly Channel<ClientRequest> _queue = Channel.CreateBounded<ClientRequest>(Params);
+
+    public ValueTask Enqueue(ClientRequest request)
+    {
+        return _queue.Writer.WriteAsync(request);
     }
 
-    public ClientRequest? TryDequeue()
+    public ValueTask<ClientRequest> Dequeue(CancellationToken cancellationToken)
     {
-        _queue.TryDequeue(out var request);
-        return request;
+        return _queue.Reader.ReadAsync(cancellationToken);
     }
 }

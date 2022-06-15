@@ -4,6 +4,6 @@ namespace Weather.ProcessingService.Services.Interfaces;
 
 public interface ILocalRequestQueueService
 {
-    void Enqueue(ClientRequest request);
-    ClientRequest? TryDequeue();
+    ValueTask Enqueue(ClientRequest request);
+    ValueTask<ClientRequest> Dequeue(CancellationToken cancellationToken);
 }

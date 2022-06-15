@@ -81,13 +81,7 @@ public class StreamReaderHostedService : BackgroundService
         {
             while(!stoppingToken.IsCancellationRequested)
             {
-                var @event = _localRequestQueue.TryDequeue();
-                if(@event is null)
-                {
-                    await Task.Delay(TimeSpan.FromMilliseconds(100), stoppingToken);
-                    continue;
-                }
-
+                var @event = await _localRequestQueue.Dequeue(stoppingToken);
                 await eventResponseStream.RequestStream.WriteAsync(@event, stoppingToken);
             }
         }
