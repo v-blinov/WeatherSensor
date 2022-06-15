@@ -45,10 +45,14 @@ public class StreamReaderHostedService : BackgroundService
         {
             using var eventResponseStream = client.SendEvents(new Metadata(), cancellationToken: stoppingToken);
 
-            responseReaderTask ??= ResponseReaderTask(eventResponseStream, stoppingToken);
-            sendRequestTask ??= SendRequestTask(eventResponseStream, stoppingToken);
+            var task =Task.Run(async () =>
+            {
+                await ResponseReaderTask(eventResponseStream, stoppingToken);
+            }, stoppingToken);
+            
+            await SendRequestTask(eventResponseStream, stoppingToken);
+            await task;
 
-            await Task.WhenAll(sendRequestTask, responseReaderTask);
             await eventResponseStream.RequestStream.CompleteAsync();
         }
         catch(RpcException ex)
@@ -96,26 +100,21 @@ public class StreamReaderHostedService : BackgroundService
     {
         try
         {
-            var responseTask = Task.Run(async () =>
+            while(await eventResponseStream.ResponseStream.MoveNext(stoppingToken))
             {
-                while(await eventResponseStream.ResponseStream.MoveNext(stoppingToken))
+                var e = eventResponseStream.ResponseStream.Current;
+
+                var @event = new EventDto
                 {
-                    var e = eventResponseStream.ResponseStream.Current;
+                    CreatedAt = e.CreatedAt.ToDateTime(), 
+                    Temperature = e.Temperature, 
+                    AirHumidity = e.AirHumidity, 
+                    Co2 = e.Co2
+                };
 
-                    var @event = new EventDto
-                    {
-                        CreatedAt = e.CreatedAt.ToDateTime(), 
-                        Temperature = e.Temperature, 
-                        AirHumidity = e.AirHumidity, 
-                        Co2 = e.Co2
-                    };
-
-                    var sensorId = new Guid(e.SensorId);
-                    _eventService.Add(sensorId, @event);
-                }
-            }, stoppingToken);
-
-            await responseTask;
+                var sensorId = new Guid(e.SensorId);
+                _eventService.Add(sensorId, @event);
+            }
         }
         catch(Exception ex)
         {
