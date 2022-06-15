@@ -17,14 +17,14 @@ public class ConnectionController: Controller
     }
 
     [HttpGet]
-    public ActionResult Subscribe([FromQuery] Guid sensorId, [FromQuery] Operation operation)
+    public async Task<ActionResult> Subscribe([FromQuery] Guid sensorId, [FromQuery] Operation operation)
     {
         try
         {
             _logger.LogInformation("Try to {Operation} to sensor with id:{SensorId}", operation, sensorId);
             var request = new ClientRequest { SensorId = sensorId.ToString(), Operation = operation };
             
-            _localRequestQueueService.Enqueue(request);
+            await _localRequestQueueService.Enqueue(request);
 
             return Ok();
         }
