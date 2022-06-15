@@ -2,7 +2,7 @@
 
 namespace Weather.SensorService.Models;
 
-public record SensorSettings
+public record InitializeSettings
 {
     public int WorkInterval { get; init; }
     public SensorType SensorType { get; init; }

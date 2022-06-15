@@ -4,7 +4,6 @@ namespace Weather.SensorService.BL.Models;
 
 public record SensorSettings
 {
-    // TODO : Add fluentValidator
     private int workInterval;
     public int WorkInterval
     {

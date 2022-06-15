@@ -5,6 +5,7 @@ using Weather.SensorService.BL.Storages;
 using Weather.SensorService.BL.Storages.Interfaces;
 using Weather.SensorService.GrpcServices;
 using Weather.SensorService.Models;
+using Weather.SensorService.Workers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,16 +16,18 @@ var logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
-builder.Services.Configure<List<SensorSettings>>(builder.Configuration.GetSection("Sensors"));
-
+builder.Services.Configure<IndoorSettings>(builder.Configuration.GetSection("IndoorSettings"));
+builder.Services.Configure<OutdoorSettings>(builder.Configuration.GetSection("OutdoorSettings"));
 
 builder.Services.AddScoped<ISensorService, SensorService>();
 builder.Services.AddSingleton<ISensorStorage, SensorStorage>();
 
+builder.Services.AddHostedService<IndoorSensorWorker>();
+builder.Services.AddHostedService<OutdoorSensorWorker>();
+
 
 builder.Services.AddGrpc();
 builder.Services.AddControllers();
-// builder.Services.AddMvcCore();
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddRouting(options =>

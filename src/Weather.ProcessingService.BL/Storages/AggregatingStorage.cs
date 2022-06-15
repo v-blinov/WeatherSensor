@@ -8,12 +8,17 @@ public class AggregatingStorage : IAggregatingStorage
 {
     private readonly ConcurrentDictionary<Guid, List<AggregatedData>> _storage = new();
 
+    private readonly object _locker = new();
+    
     public void Add(AggregatedData aggregatedData)
     {
-        if(!_storage.ContainsKey(aggregatedData.SensorId))
-            _storage[aggregatedData.SensorId] = new List<AggregatedData>();
-
-        _storage[aggregatedData.SensorId].Add(aggregatedData);
+        lock(_locker)
+        {
+            if(_storage.ContainsKey(aggregatedData.SensorId))
+                _storage[aggregatedData.SensorId].Add(aggregatedData);
+            else 
+                _storage[aggregatedData.SensorId] = new List<AggregatedData> { aggregatedData };
+        }
     }
 
     public IDictionary<Guid, IEnumerable<AggregatedData>> GetAggregatedData()
@@ -36,10 +41,7 @@ public class AggregatingStorage : IAggregatingStorage
     
     public IEnumerable<AggregatedData> GetAggregatedDataBySensorId(Guid sensorId)
     {
-        if (!_storage.TryGetValue(sensorId, out var data))
-            throw new KeyNotFoundException();
-
-        return data.ToArray();
+        return _storage[sensorId];
     }
     
     public IEnumerable<AggregatedData> GetAggregatedDataBySensorIdForPeriod(Guid sensorId, Period period)
@@ -52,10 +54,7 @@ public class AggregatingStorage : IAggregatingStorage
         var dataBySensors = new Dictionary<Guid, IEnumerable<AggregatedData>>();
         foreach(var sensorId in sensorIds)
         {
-            if (!_storage.TryGetValue(sensorId, out var data))
-                throw new KeyNotFoundException();
-
-            dataBySensors[sensorId] = data.ToArray();
+            dataBySensors[sensorId] = _storage[sensorId].ToArray();
         }
         
         return dataBySensors;
@@ -66,9 +65,6 @@ public class AggregatingStorage : IAggregatingStorage
         var dataBySensors = new Dictionary<Guid, IEnumerable<AggregatedData>>();
         foreach(var sensorId in sensorIds)
         {
-            if (!_storage.TryGetValue(sensorId, out var data))
-                throw new KeyNotFoundException();
-
             dataBySensors[sensorId] = GetAggregatingDataBySensorInternal(sensorId, period);
         }
         
@@ -80,8 +76,7 @@ public class AggregatingStorage : IAggregatingStorage
         if(period.From.CompareTo(period.To) > 0)
             throw new ArgumentException($"Datetime From ({period.From}) couldn't bu more then datetime To ({period.To})");
 
-        if(!_storage.TryGetValue(sensorId, out var aggregatingData))
-            throw new KeyNotFoundException();
+        var aggregatingData = _storage[sensorId];
 
         var from = new DateTime(period.From.Year, period.From.Month, period.From.Day, period.From.Hour, period.From.Minute, 0);
         var to = new DateTime(period.To.Year, period.To.Month, period.To.Day, period.To.Hour, period.To.Minute, 0);

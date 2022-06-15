@@ -8,20 +8,23 @@ public class EventStorage : IEventStorage
 {
     private readonly ConcurrentDictionary<Guid, List<Event>> _storage = new();
 
+    private readonly object _locker = new();
+    
     public void Add(Event @event)
     {
-        if(!_storage.ContainsKey(@event.SensorId))
-            _storage[@event.SensorId] = new List<Event>();
-
-        _storage[@event.SensorId].Add(@event);
+        // AddOrUpdate вроде не обеспечивает нужной защищенности, поэтому lock
+        lock(_locker)
+        {
+            if(_storage.ContainsKey(@event.SensorId))
+                _storage[@event.SensorId].Add(@event);
+            else 
+                _storage[@event.SensorId] = new List<Event> { @event };
+        }
     }
 
     public IEnumerable<Event> GetEvents(Guid sensorId)
     {
-        if(!_storage.TryGetValue(sensorId, out var events))
-            throw new KeyNotFoundException();
-
-        return events.ToArray();
+        return _storage[sensorId];
     }
 
     public IDictionary<Guid, IEnumerable<Event>> GetEvents(IEnumerable<Guid> sensorIds)
@@ -49,9 +52,7 @@ public class EventStorage : IEventStorage
 
     public IEnumerable<Event> GetEventsForPeriod(Guid sensorId, Period period)
     {
-        if(!_storage.TryGetValue(sensorId, out var events))
-            throw new KeyNotFoundException();
-
+        var events = _storage[sensorId];
         return events.Where(e => period.From <= e.CreatedAt && e.CreatedAt <= period.To).ToArray();
     }
 

@@ -1,6 +1,6 @@
 ﻿namespace ObserverLibrary.Models;
 
-public record Event
+public record EventItem
 {
     /// <summary>
     /// Идентификатор сенсора

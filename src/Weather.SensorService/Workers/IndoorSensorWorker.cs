@@ -1,96 +1,103 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using Grpc.Core;
-using Grpc.Net.ClientFactory;
+﻿using Microsoft.Extensions.Options;
+using ObserverLibrary.Interfaces;
+using Weather.SensorService.BL.Models;
+using Weather.SensorService.BL.Models.Interfaces;
+using Weather.SensorService.BL.Storages.Interfaces;
 using Weather.SensorService.Models;
-using Weather.SensorService.Workers.Interfaces;
 
 namespace Weather.SensorService.Workers;
 
-public class IndoorSensorWorker : Generator.GeneratorBase, ISensorWorker
+public class IndoorSensorWorker : BackgroundService, ISensor
 {
     private readonly ILogger<IndoorSensorWorker> _logger;
 
-    private readonly Guid _id;
-    private readonly int _delayPeriod;
-    private readonly Generator.GeneratorClient _client;
-    private State _state;
+    public Guid Id { get; init; } = Guid.NewGuid();
+    public Event State { get; init; }
+    public SensorSettings SensorSettings { get; init; }
 
+    private List<ISubscriber> _subscribers = new();
     
-    public IndoorSensorWorker(GrpcClientFactory grpcClientFactory, ILogger<IndoorSensorWorker> logger)
+    public IndoorSensorWorker(
+        IOptions<IndoorSettings> initializeSensorSettings, 
+        ILogger<IndoorSensorWorker> logger,
+        ISensorStorage sensorStorage)
     {
-        _id = Guid.NewGuid();
-        
-        _state = new State(); // TODO: Считывать из конфига
-        _delayPeriod = 1000;  // TODO: Считывать из конфига
-        _client = grpcClientFactory.CreateClient<Generator.GeneratorClient>("IndoorSensorWorker");
-        
         _logger = logger;
-    }
 
-    public override async Task SendEvents(
-        IAsyncStreamReader<ClientRequest> requestStream,
-        IServerStreamWriter<ServerResponse> responseStream,
-        ServerCallContext context)
-    {
-        try
+        var settings = initializeSensorSettings.Value.InitializeSettings;
+        SensorSettings = new SensorSettings
         {
-            var httpContext = context.GetHttpContext ();
-            _logger.LogInformation ("Connection id: {ConnectionId}", httpContext.Connection.Id);
-
-            if(!await requestStream.MoveNext()) 
-                return;
-            
-            var random = new Random();
-            
-            while (!context.CancellationToken.IsCancellationRequested)
+            Type = settings.SensorType,
+            WorkInterval = settings.WorkInterval
+        };
+        State = new Event
+        {
+            CreatedAt = DateTime.UtcNow,
+            EventData = new EventData
             {
-                await Task.Delay(_delayPeriod, context.CancellationToken);
-                _state = GenerateState(random);
-
-                var response = new ServerResponse
-                {
-                    SensorId = _id.ToString(),
-                    CreatedAt = DateTime.Now.ToTimestamp(),
-                    Temperature = _state.Temperature,
-                    AirHumidity = _state.AirHumidity,
-                    Co2 = _state.Co2
-                };
-                
-                await responseStream.WriteAsync(response, context.CancellationToken);
+                Temperature = settings.InitializeEventValues.Temperature,
+                AirHumidity = settings.InitializeEventValues.AirHumidity,
+                Co2 = settings.InitializeEventValues.Co2
             }
-        }
-        catch (OperationCanceledException)
-        {
-            _logger.LogWarning("An operation was canceled");
-        }
+        };
+        
+        sensorStorage.Add(this);
     }
 
-    public State GenerateState(Random random)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        return new State
+        _logger.LogInformation("{Worker} start executing", nameof(IndoorSensorWorker));
+        
+        while(!stoppingToken.IsCancellationRequested)
         {
-            Temperature = _state.Temperature + (random.Next(-2, 2) * 0.1), 
-            AirHumidity = _state.AirHumidity + random.Next(-2, 2), 
-            Co2 = _state.Co2 + random.Next(-70, 70)
+            await Task.Delay(TimeSpan.FromMilliseconds(SensorSettings.WorkInterval), stoppingToken);
+            var @event = GenerateEvent();
+
+            var observerEvent = new ObserverLibrary.Models.EventItem
+            {
+                SensorId = Id,
+                CreatedAt = @event.CreatedAt,
+                Temperature = @event.EventData.Temperature,
+                AirHumidity = @event.EventData.AirHumidity,
+                Co2 = @event.EventData.Co2
+            };
+            
+            Notify(observerEvent);
+        }
+        
+        _logger.LogInformation("{Worker} stop executing", nameof(IndoorSensorWorker));
+    }
+    
+    public Event GenerateEvent()
+    {
+        var state = State.EventData;
+        var random = new Random();
+        
+        return new Event
+        {
+            CreatedAt = DateTime.UtcNow,
+            EventData = new EventData()
+            {
+                Temperature = state.Temperature + (random.Next(-2, 2) * 0.1),
+                AirHumidity = state.AirHumidity + random.Next(-2, 2),
+                Co2 = state.Co2 + random.Next(-70, 70)
+            }
         };
     }
-    
-    // Пытался сделать сенсоры отдельными воркерами
-    // protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    // {
-    //     await using var scope = _provider.CreateAsyncScope();
-    //     var client = scope.ServiceProvider.GetRequiredService<Generator.GeneratorBase>();
-    //     using var sendEvents = client.SendEvents(, cancellationToken: stoppingToken);
-    //     
-    //     while(!stoppingToken.IsCancellationRequested)
-    //     {
-    //         await Task.Delay(_delayPeriod, stoppingToken);
-    //
-    //         _logger.LogInformation("{Worker} work", nameof(IndoorSensorWorker));
-    //
-    //         State = GenerateState();
-    //
-    //         await responseStream.WriteAsync(result, context.CancellationToken);
-    //     }
-    // }
+
+    public void Subscribe(ISubscriber subscriber)
+    {
+        _subscribers.Add(subscriber);
+    }
+
+    public void Unsubscribe(ISubscriber subscriber)
+    {
+        _subscribers.Remove(subscriber);
+    }
+
+    public void Notify(ObserverLibrary.Models.EventItem eventItem)
+    {
+        foreach(var subscriber in _subscribers)
+            subscriber.UpdateSensorEventsQueue(eventItem);
+    }
 }

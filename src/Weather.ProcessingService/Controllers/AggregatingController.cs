@@ -28,12 +28,12 @@ public class AggregatingController : Controller
         }
         catch(KeyNotFoundException ex)
         {
-            _logger.LogError("[Not Found]: {Error}", ex.Message);
+            _logger.LogError(ex, "[Not Found]");
             return NotFound();
         }
         catch(Exception ex)
         {
-            _logger.LogError("[Internal Server Error]: {Error}", ex.Message);
+            _logger.LogError(ex, "[Internal Server Error]");
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
@@ -50,12 +50,12 @@ public class AggregatingController : Controller
         }
         catch(KeyNotFoundException ex)
         {
-            _logger.LogError("[Not Found]: {Error}", ex.Message);
+            _logger.LogError(ex, "[Not Found]");
             return NotFound();
         }
         catch(Exception ex)
         {
-            _logger.LogError("[Internal Server Error]: {Error}", ex.Message);
+            _logger.LogError(ex, "[Internal Server Error]");
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
@@ -72,12 +72,12 @@ public class AggregatingController : Controller
         }
         catch(KeyNotFoundException ex)
         {
-            _logger.LogError("[Not Found]: {SensorId}. {Error}", sensorId, ex.Message);
+            _logger.LogError(ex, "[Not Found]: {SensorId}", sensorId);
             return NotFound();
         }
         catch(Exception ex)
         {
-            _logger.LogError("[Internal Server Error]: {Error}", ex.Message);
+            _logger.LogError(ex, "[Internal Server Error]");
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
@@ -94,17 +94,17 @@ public class AggregatingController : Controller
         }
         catch(KeyNotFoundException ex)
         {
-            _logger.LogError("[Not Found]: {SensorId}. {Error}", sensorId, ex.Message);
+            _logger.LogError(ex, "[Not Found]: {SensorId}", sensorId);
             return NotFound();
         }
         catch(ArgumentException ex)
         {
-            _logger.LogError("[Argument Exception]: {Error}", ex.Message);
+            _logger.LogError(ex, "[Argument Exception]");
             return BadRequest();
         }
         catch(Exception ex)
         {
-            _logger.LogError("[Internal Server Error]: {Error}", ex.Message);
+            _logger.LogError(ex, "[Internal Server Error]");
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
