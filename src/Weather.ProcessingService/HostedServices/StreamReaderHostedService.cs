@@ -91,7 +91,7 @@ public class StreamReaderHostedService : BackgroundService
                 await eventResponseStream.RequestStream.WriteAsync(@event, stoppingToken);
             }
         }
-        catch(RpcException ex)
+        catch(Exception ex)
         {
             _logger.LogError(ex, "Rpc exception");
             throw;
@@ -123,10 +123,10 @@ public class StreamReaderHostedService : BackgroundService
 
             await responseTask;
         }
-        catch(RpcException ex)
+        catch(Exception ex)
         {
             _logger.LogError(ex, "Rpc exception");
-            throw new Exception();
+            throw;
         }
     }
 }
